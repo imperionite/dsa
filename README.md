@@ -5,3 +5,5 @@
 
 [Delete Stock Item](https://github.com/imperionite/dsa/blob/p1/deleting-stock-item/src/main/java/com/imperionite/inventorysystem/InventorySystem.java)
 
+[Sorting Stock Item](https://github.com/imperionite/dsa/blob/p1/sorting-stock/src/main/java/com/imperionite/inventorysystem/InventorySystem.java)
+
