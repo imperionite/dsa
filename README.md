@@ -1,11 +1,14 @@
 # dsa
 
+## Phase 3 Core Requirements & Milestone Links
 
-[Add Stock Item](https://github.com/imperionite/dsa/blob/p1/add-new-stock/src/main/java/com/imperionite/inventorysystem/InventorySystem.java)
-
-[Delete Stock Item](https://github.com/imperionite/dsa/blob/p1/deleting-stock-item/src/main/java/com/imperionite/inventorysystem/InventorySystem.java)
-
-[Sorting Stock Item](https://github.com/imperionite/dsa/blob/p1/sorting-stock/src/main/java/com/imperionite/inventorysystem/InventorySystem.java)
-
-[Inventory Search Item](https://github.com/imperionite/dsa/blob/p1/inventory-search/src/main/java/com/imperionite/inventorysystem/InventorySystem.java)
-
+| MS   | Action                                                                                                                                                  | Link                                                                                                                                                    |
+| ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| MS 1 | [Add Stock Item](https://github.com/imperionite/dsa/blob/p1/add-new-stock/src/main/java/com/imperionite/inventorysystem/InventorySystem.java)           | [Add Stock Item](https://github.com/imperionite/dsa/blob/p1/add-new-stock/src/main/java/com/imperionite/inventorysystem/InventorySystem.java)           |
+| MS 1 | [Delete Stock Item](https://github.com/imperionite/dsa/blob/p1/deleting-stock-item/src/main/java/com/imperionite/inventorysystem/InventorySystem.java)  | [Delete Stock Item](https://github.com/imperionite/dsa/blob/p1/deleting-stock-item/src/main/java/com/imperionite/inventorysystem/InventorySystem.java)  |
+| MS 1 | [Sorting Stock Item](https://github.com/imperionite/dsa/blob/p1/sorting-stock/src/main/java/com/imperionite/inventorysystem/InventorySystem.java)       | [Sorting Stock Item](https://github.com/imperionite/dsa/blob/p1/sorting-stock/src/main/java/com/imperionite/inventorysystem/InventorySystem.java)       |
+| MS 1 | [Inventory Search Item](https://github.com/imperionite/dsa/blob/p1/inventory-search/src/main/java/com/imperionite/inventorysystem/InventorySystem.java) | [Inventory Search Item](https://github.com/imperionite/dsa/blob/p1/inventory-search/src/main/java/com/imperionite/inventorysystem/InventorySystem.java) |
+| MS 2 | [Add Stock Item](https://github.com/imperionite/dsa/blob/p1/add-new-stock/src/main/java/com/imperionite/inventorysystem/InventorySystem.java)           | [Add Stock Item](https://github.com/imperionite/dsa/blob/p1/add-new-stock/src/main/java/com/imperionite/inventorysystem/InventorySystem.java)           |
+| MS 2 | [Delete Stock Item](https://github.com/imperionite/dsa/blob/p1/deleting-stock-item/src/main/java/com/imperionite/inventorysystem/InventorySystem.java)  | [Delete Stock Item](https://github.com/imperionite/dsa/blob/p1/deleting-stock-item/src/main/java/com/imperionite/inventorysystem/InventorySystem.java)  |
+| MS 2 | [Sorting Stock Item](https://github.com/imperionite/dsa/blob/p1/sorting-stock/src/main/java/com/imperionite/inventorysystem/InventorySystem.java)       | [Sorting Stock Item](https://github.com/imperionite/dsa/blob/p1/sorting-stock/src/main/java/com/imperionite/inventorysystem/InventorySystem.java)       |
+| MS 2 | [Inventory Search Item](https://github.com/imperionite/dsa/blob/p1/inventory-search/src/main/java/com/imperionite/inventorysystem/InventorySystem.java) | [Inventory Search Item](https://github.com/imperionite/dsa/blob/p1/inventory-search/src/main/java/com/imperionite/inventorysystem/InventorySystem.java) |
