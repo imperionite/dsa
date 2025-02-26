@@ -79,7 +79,7 @@ public class InventorySystem {
         engineNumbers.add(engineNumber);
 
         // Create a new stock entry and save it to CSV
-        Stock newStock = new Stock(dateEntered, parsedDate, stockLabel, brand, engineNumber, status);
+        Stock newStock = new Stock(dateEntered, stockLabel, brand, engineNumber, status);
         stockList.add(newStock);
         saveStockToCSV(newStock); // Save the stock to CSV
         System.out.println("New stock added: " + newStock);
@@ -138,7 +138,7 @@ public class InventorySystem {
                     LocalDate parsedDate = parseDate(dateEntered);
                     if (parsedDate != null) {
                         // Add the stock to the inventory list
-                        Stock stock = new Stock(dateEntered, parsedDate, stockLabel, brand, engineNumber, status);
+                        Stock stock = new Stock(dateEntered, stockLabel, brand, engineNumber, status);
                         stockList.add(stock);
                         engineNumbers.add(engineNumber); // Add engine number to the set
                     }
