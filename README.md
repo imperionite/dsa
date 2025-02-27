@@ -15,9 +15,11 @@
 
 **MS 2**
 
-[Add New Stock Item](https://github.com/imperionite/dsa/tree/p2/add-new-stockV2/src/main/java/com/imperionite/inventorysystem)
+[Add Stock Item](https://github.com/imperionite/dsa/tree/p2/add-new-stockV2/src/main/java/com/imperionite/inventorysystem)
 
-[Delete Stock Item](https://github.com/imperionite/dsa/tree/p2/delete-stock/src/main/java/com/imperionite/inventorysystem)
+[Deleting Stock](https://github.com/imperionite/dsa/tree/p2/delete-stock/src/main/java/com/imperionite/inventorysystem)
+
+[Sorting by Brand](https://github.com/imperionite/dsa/blob/p2/sorting-stock/src/main/java/com/imperionite/inventorysystem)
 
 
 ## To run the app
