@@ -16,13 +16,15 @@ public class InventorySystem {
 
     // HashMap to store the inventory with engineNumber as the key
     private Map<String, Stock> inventoryMap;
+    private BST bst;
 
     // Constructor
     public InventorySystem() {
         inventoryMap = new HashMap<>();
+        bst = new BST();
     }
 
-    // Method to read CSV file and load into HashMap
+    // Method to read CSV file and load into HashMap and BST
     public void loadInventoryFromCSV(String filePath) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy"); // Correct format (MM/dd/yyyy)
         
@@ -44,6 +46,9 @@ public class InventorySystem {
 
                 // Insert into HashMap (engineNumber is the key)
                 inventoryMap.put(engineNumber, stock);
+
+                // Insert into BST for sorted inventory by brand
+                bst.insert(stock);
             }
 
             // Debugging: Print out all the items in inventoryMap to verify it's populated
@@ -59,30 +64,64 @@ public class InventorySystem {
         return inventoryMap.get(engineNumber);  // HashMap provides O(1) lookup time
     }
 
+    // Method to search inventory by brand
+    public void searchByBrand(String brand) {
+        List<Stock> filteredStocks = bst.getFilteredStocksByBrand(brand);
+        if (filteredStocks.isEmpty()) {
+            System.out.println("No stocks found with brand: " + brand);
+        } else {
+            System.out.println("Stocks found with brand " + brand + ":");
+            for (Stock stock : filteredStocks) {
+                System.out.println(stock);
+            }
+        }
+    }
+
     // Method for user interaction (recursive search)
     public void startUserSearch() {
         Scanner scanner = new Scanner(System.in);
         String userInput;
 
         while (true) {
-            System.out.print("Enter engine number to search (or type 'exit' to quit): ");
+            System.out.println("\nWhat would you like to do?");
+            System.out.println("1. Search by engine number");
+            System.out.println("2. Search by brand");
+            System.out.println("3. Exit");
+
+            System.out.print("Enter your choice (1, 2, or 3): ");
             userInput = scanner.nextLine().trim();
 
-            if ("exit".equalsIgnoreCase(userInput)) {
-                System.out.println("Exiting the program.");
-                break;  // Exit the loop and terminate the program
-            }
+            switch (userInput) {
+                case "1":
+                    // Search by engine number
+                    System.out.print("Enter engine number to search: ");
+                    String engineNumber = scanner.nextLine().trim();
+                    Stock foundStock = searchByEngineNumber(engineNumber);
+                    if (foundStock != null) {
+                        System.out.println("Stock found: " + foundStock);
+                    } else {
+                        System.out.println("No stock found with engine number: " + engineNumber);
+                    }
+                    break;
 
-            // Search and display the result
-            Stock foundStock = searchByEngineNumber(userInput);
-            if (foundStock != null) {
-                System.out.println("Stock found: " + foundStock);
-            } else {
-                System.out.println("No stock found with engine number: " + userInput);
+                case "2":
+                    // Search by brand
+                    System.out.print("Enter brand to search: ");
+                    String brand = scanner.nextLine().trim();
+                    searchByBrand(brand);
+                    break;
+
+                case "3":
+                    // Exit
+                    System.out.println("Exiting the program.");
+                    scanner.close();  // Close the scanner
+                    return;  // Exit the loop and terminate the program
+
+                default:
+                    System.out.println("Invalid input. Please enter 1, 2, or 3.");
+                    break;
             }
         }
-
-        scanner.close();  // Close the scanner
     }
 
     public static void main(String[] args) {
