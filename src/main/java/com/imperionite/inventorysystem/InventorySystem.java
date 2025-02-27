@@ -8,66 +8,91 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class InventorySystem {
 
-    public static void main(String[] args) {
-        // Create an instance of BST
-        BST bst = new BST();
+    // HashMap to store the inventory with engineNumber as the key
+    private Map<String, Stock> inventoryMap;
 
-        // Read the CSV file and insert data into the BST
-        try (CSVReader csvReader = new CSVReader(new FileReader("data/inventory.csv"))) {
+    // Constructor
+    public InventorySystem() {
+        inventoryMap = new HashMap<>();
+    }
+
+    // Method to read CSV file and load into HashMap
+    public void loadInventoryFromCSV(String filePath) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy"); // Correct format (MM/dd/yyyy)
+        
+        try (CSVReader csvReader = new CSVReader(new FileReader(filePath))) {
             List<String[]> records = csvReader.readAll();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy");
 
-            // Skip the header and process each record
-            for (int i = 1; i < records.size(); i++) {
-                String[] record = records.get(i);
-                String dateEnteredStr = record[0];
+            for (String[] record : records) {
+                if (record[0].equals("Date Entered")) continue;  // Skip header row
+
+                // Parse the date with the custom formatter
+                LocalDate dateEntered = LocalDate.parse(record[0], formatter);
                 String stockLabel = record[1];
                 String brand = record[2];
                 String engineNumber = record[3];
                 String status = record[4];
 
-                // Convert date string to LocalDate
-                LocalDate dateEntered = LocalDate.parse(dateEnteredStr, formatter);
-
-                // Create a Stock object and insert it into the BST
+                // Create a new Stock object
                 Stock stock = new Stock(dateEntered, stockLabel, brand, engineNumber, status);
-                bst.insert(stock);
+
+                // Insert into HashMap (engineNumber is the key)
+                inventoryMap.put(engineNumber, stock);
             }
 
-            // Ask the user for brand filtering (optional)
-            Scanner scanner = new Scanner(System.in);
-            System.out.println("Do you want to filter by a specific brand? (yes/no)");
-            String filterChoice = scanner.nextLine().trim().toLowerCase();
-
-            List<Stock> sortedStocks;
-
-            if (filterChoice.equals("yes")) {
-                System.out.println("Enter the brand name to filter by (e.g., Honda, Kawasaki):");
-                String brandToFilter = scanner.nextLine().trim();
-                sortedStocks = bst.getFilteredStocksByBrand(brandToFilter); // Get filtered stocks
-            } else {
-                sortedStocks = bst.getSortedStocks();  // Get all stocks sorted by brand
-            }
-
-            // Display the sorted or filtered stocks
-            System.out.println("Inventory sorted by Brand (filtered by requested brand if any):");
-            if (sortedStocks.isEmpty()) {
-                System.out.println("No records found for the selected brand.");
-            } else {
-                for (Stock stock : sortedStocks) {
-                    System.out.println(stock);
-                }
-            }
-
-            scanner.close();
+            // Debugging: Print out all the items in inventoryMap to verify it's populated
+            System.out.println("Inventory loaded successfully. Total items: " + inventoryMap.size());
 
         } catch (IOException | CsvException e) {
-            System.err.println("Error reading CSV file: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    // Method to search inventory by engine number
+    public Stock searchByEngineNumber(String engineNumber) {
+        return inventoryMap.get(engineNumber);  // HashMap provides O(1) lookup time
+    }
+
+    // Method for user interaction (recursive search)
+    public void startUserSearch() {
+        Scanner scanner = new Scanner(System.in);
+        String userInput;
+
+        while (true) {
+            System.out.print("Enter engine number to search (or type 'exit' to quit): ");
+            userInput = scanner.nextLine().trim();
+
+            if ("exit".equalsIgnoreCase(userInput)) {
+                System.out.println("Exiting the program.");
+                break;  // Exit the loop and terminate the program
+            }
+
+            // Search and display the result
+            Stock foundStock = searchByEngineNumber(userInput);
+            if (foundStock != null) {
+                System.out.println("Stock found: " + foundStock);
+            } else {
+                System.out.println("No stock found with engine number: " + userInput);
+            }
+        }
+
+        scanner.close();  // Close the scanner
+    }
+
+    public static void main(String[] args) {
+        InventorySystem inventorySystem = new InventorySystem();
+
+        // Load inventory from CSV file
+        String filePath = "data/inventory.csv";
+        inventorySystem.loadInventoryFromCSV(filePath);
+
+        // Start interactive search loop
+        inventorySystem.startUserSearch();
     }
 }
