@@ -19,7 +19,7 @@
 
 [Deleting Stock](https://github.com/imperionite/dsa/tree/p2/delete-stock/src/main/java/com/imperionite/inventorysystem)
 
-[Sorting by Brand](https://github.com/imperionite/dsa/blob/p2/sorting-stock/src/main/java/com/imperionite/inventorysystem)
+[Sorting by Brand](https://github.com/imperionite/dsa/tree/p2/sorting-stock/src/main/java/com/imperionite/inventorysystem)
 
 [Searching the Inventory](https://github.com/imperionite/dsa/tree/p2/inventory-search/src/main/java/com/imperionite/inventorysystem)
 
