@@ -3,7 +3,6 @@ package com.imperionite.inventorysystem;
 import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.*;
 
 import org.apache.commons.csv.CSVFormat;
@@ -13,211 +12,101 @@ import org.apache.commons.csv.CSVRecord;
 
 public class InventorySystem {
 
-    private List<Stock> stockList = new ArrayList<>();
-    // private Set<String> engineNumbers = new HashSet<>(); // To ensure unique
-    // engine numbers
     private static final String CSV_FILE_PATH = "data/inventory.csv"; // Path to the CSV file
-    private StockBST stockBST = new StockBST(); // We now use the BST for stock operations
+    private List<Stock> stockList = new ArrayList<>();
+    private Set<String> engineNumbersSet = new HashSet<>();
+    private Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
         InventorySystem system = new InventorySystem();
-        system.loadExistingStocks(); // Load existing stocks from the CSV file
 
-        system.showMenu(); // Show menu for the user to choose an action
+        // Load data from CSV
+        system.loadStockData(CSV_FILE_PATH);
+
+        // Start the deletion process
+        system.startDeletionProcess();
+
+        // Save the updated data back to CSV after deletion
+        system.saveStockData(CSV_FILE_PATH);
     }
 
-    // Show the menu with options to add or delete stock
-    public void showMenu() {
-        Scanner scanner = new Scanner(System.in);
+    // Load stock data from CSV
+    public void loadStockData(String filename) {
+        try (Reader reader = new FileReader(filename); @SuppressWarnings("deprecation")
+        CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT.withHeader())) {
+            Iterable<CSVRecord> records = csvParser.getRecords();
 
-        System.out.println("\nWelcome to the Inventory System!");
-        System.out.println("Choose an option:");
-        System.out.println("1. Add New Stock");
-        System.out.println("2. Exit");
-        System.out.print("Enter your choice (1/2): ");
+            for (CSVRecord record : records) {
+                // Parse and map data
+                LocalDate dateEntered = LocalDate.parse(record.get("Date Entered"), DateTimeFormatter.ofPattern("M/d/yyyy"));
+                String stockLabel = record.get("Stock Label");
+                String brand = record.get("Brand");
+                String engineNumber = record.get("Engine Number");
+                String status = record.get("Status");
 
-        int choice = scanner.nextInt();
-        scanner.nextLine(); // Consume the newline character left by nextInt()
+                // Create stock object and add it to the list and hash set for engine numbers
+                Stock stock = new Stock(dateEntered, stockLabel, brand, engineNumber, status);
+                stockList.add(stock);
+                engineNumbersSet.add(engineNumber);  // Add to HashSet for efficient search
+            }
 
-        switch (choice) {
-            case 1:
-                acceptUserInput(scanner); // Add new stock
-                break;
-            case 2:
-                System.out.println("Exiting the system...");
-                return; // Exit the program
-            default:
-                System.out.println("Invalid choice! Please try again.");
-                showMenu(); // Recursively show the menu if the user input is invalid
+            System.out.println("Data loaded successfully.");
+        } catch (IOException e) {
+            System.out.println("Error loading CSV file: " + e.getMessage());
+        }
+    }
+
+    // Perform deletion of stock by engine number
+    public void deleteStockByEngineNumber(String engineNumber) {
+        if (!engineNumbersSet.contains(engineNumber)) {
+            System.out.println("Error: Stock with engine number " + engineNumber + " not found.");
+            return;
         }
 
-        scanner.close(); // Close the scanner
-    }
-
-    // Method to accept user input for adding a new stock
-    public void acceptUserInput(Scanner scanner) {
-        try {
-            System.out.println("Enter the stock details below:");
-
-            // Prompt user for stock details
-            System.out.print("Enter Date (MM/DD/YYYY): ");
-            String dateEnteredInput = scanner.nextLine();
-
-            // Parse the date input as LocalDate
-            LocalDate dateEntered = parseDate(dateEnteredInput);
-            if (dateEntered == null) {
-                System.out.println("Invalid date format. Please enter the date in MM/DD/YYYY format.");
+        // Find and remove the stock from the list
+        Iterator<Stock> iterator = stockList.iterator();
+        while (iterator.hasNext()) {
+            Stock stock = iterator.next();
+            if (stock.getEngineNumber().equals(engineNumber)) {
+                iterator.remove();  // Remove the stock from the list
+                engineNumbersSet.remove(engineNumber);  // Remove from HashSet
+                System.out.println("Stock with engine number " + engineNumber + " has been deleted.");
                 return;
             }
-
-            System.out.print("Enter Stock Label: ");
-            String stockLabel = scanner.nextLine();
-
-            System.out.print("Enter Brand: ");
-            String brand = scanner.nextLine();
-
-            System.out.print("Enter Engine Number: ");
-            String engineNumber = scanner.nextLine();
-
-            System.out.print("Enter Status (On-hand/Sold): ");
-            String status = scanner.nextLine();
-
-            // Add the stock using the provided details (passing LocalDate as the
-            // dateEntered parameter)
-            addNewStock(dateEntered, stockLabel, brand, engineNumber, status);
-
-            // Ask if the user wants to add another stock
-            System.out.print("Do you want to add another stock? (yes/no): ");
-            String userChoice = scanner.nextLine();
-
-            // If the user chooses "yes", recursively call the acceptUserInput method again
-            if ("yes".equalsIgnoreCase(userChoice)) {
-                acceptUserInput(scanner); // Recursive call to allow for the next entry
-            } else {
-                System.out.println("Stock addition complete.");
-            }
-        } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
         }
     }
 
-    // Method to load existing stock data from the CSV file
-    public void loadExistingStocks() {
-        try (BufferedReader reader = new BufferedReader(new FileReader(CSV_FILE_PATH))) {
-            try (@SuppressWarnings("deprecation")
-            CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT.withHeader())) {
-                for (CSVRecord record : csvParser) {
-                    String dateEnteredString = record.get("Date Entered");
-                    String stockLabel = record.get("Stock Label");
-                    String brand = record.get("Brand");
-                    String engineNumber = record.get("Engine Number");
-                    String status = record.get("Status");
+    // Start the deletion process: Prompt the user to delete by engine number or exit
+    public void startDeletionProcess() {
+        while (true) {
+            System.out.print("Enter engine number to delete or type 'exit' to quit: ");
+            String input = scanner.nextLine().trim();
 
-                    LocalDate parsedDate = parseDate(dateEnteredString);
-                    if (parsedDate != null) {
-                        Stock stock = new Stock(parsedDate, stockLabel, brand, engineNumber, status);
-                        stockList.add(stock); // Add to stock list
-                        stockBST.insert(stock); // Insert into BST
-                    } else {
-                        System.out.println("Error: Invalid date format for engine number " + engineNumber);
-                    }
-                }
+            if (input.equalsIgnoreCase("exit")) {
+                System.out.println("Exiting the application.");
+                break;
             }
+
+            deleteStockByEngineNumber(input);
+        }
+    }
+
+    // Save the stock data back to CSV after deletion
+    public void saveStockData(String filename) {
+        try (Writer writer = new FileWriter(filename); @SuppressWarnings("deprecation")
+        CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT.withHeader("Date Entered", "Stock Label", "Brand", "Engine Number", "Status"))) {
+            // Write each stock object as a CSV line
+            for (Stock stock : stockList) {
+                csvPrinter.printRecord(stock.getDateEntered().format(DateTimeFormatter.ofPattern("M/d/yyyy")),
+                        stock.getStockLabel(),
+                        stock.getBrand(),
+                        stock.getEngineNumber(),
+                        stock.getStatus());
+            }
+
+            System.out.println("Data saved to " + filename);
         } catch (IOException e) {
-            System.out.println("Error loading existing stocks: " + e.getMessage());
-        }
-    }
-
-    // Method to handle adding a new stock entry
-    public boolean addNewStock(LocalDate dateEntered, String stockLabel, String brand, String engineNumber,
-            String status) {
-        // Check if the engine number already exists in the CSV
-        if (engineNumberExists(engineNumber)) {
-            System.out.println("Error: Duplicate engine number, stock cannot be added.");
-            return false; // Engine number already exists, return false
-        }
-
-        // Create a new stock entry
-        Stock newStock = new Stock(dateEntered, stockLabel, brand, engineNumber, status);
-
-        // Add to stockList and StockBST
-        stockList.add(newStock);
-        stockBST.insert(newStock);
-
-        // Rebuild the StockBST (this can be an optional step if you want to ensure the
-        // tree is always updated)
-        rebuildTreeFromList();
-
-        // Save the stock to CSV
-        saveStockToCSV(newStock);
-
-        System.out.println("New stock added: " + newStock);
-        return true; // Stock added successfully
-    }
-
-    // Rebuild the entire BST from the stockList
-    private void rebuildTreeFromList() {
-        // Empty the tree and then reinsert all items from stockList
-        stockBST = new StockBST(); // Assuming stockBST is the reference to your tree
-        for (Stock stock : stockList) {
-            stockBST.insert(stock);
-        }
-    }
-
-    // Method to check if engine number already exists
-    public boolean engineNumberExists(String engineNumber) {
-        // Check if engine number exists in BST
-        Stock stock = stockBST.searchByEngineNumber(engineNumber);
-        return stock != null;
-    }
-
-    // Method to save the new stock to the CSV file
-    public void saveStockToCSV(Stock stock) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(CSV_FILE_PATH, true))) {
-            // Check if the file is empty to write header
-            File file = new File(CSV_FILE_PATH);
-            if (file.length() == 0) {
-                try (@SuppressWarnings("deprecation")
-                CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT.withHeader("Date Entered",
-                        "Stock Label", "Brand", "Engine Number", "Status"))) {
-                    // Write the first stock record
-                    csvPrinter.printRecord(stock.getDateEntered(), stock.getStockLabel(), stock.getBrand(),
-                            stock.getEngineNumber(), stock.getStatus());
-                    csvPrinter.flush();
-                }
-            } else {
-                // Append stock data without header
-                try (CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT)) {
-                    csvPrinter.printRecord(stock.getDateEntered(), stock.getStockLabel(), stock.getBrand(),
-                            stock.getEngineNumber(), stock.getStatus());
-                    csvPrinter.flush();
-                }
-            }
-        } catch (IOException e) {
-            System.out.println("Error saving stock to CSV: " + e.getMessage());
-        }
-    }
-
-    // Method to parse date from the user input to LocalDate
-    public LocalDate parseDate(String dateString) {
-        try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy");
-            return LocalDate.parse(dateString, formatter);
-        } catch (DateTimeParseException e1) {
-            try {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-                return LocalDate.parse(dateString, formatter);
-            } catch (DateTimeParseException e2) {
-                return null; // Invalid date
-            }
-        }
-    }
-
-    // Method to show all stocks
-    public void showAllStocks() {
-        System.out.println("Current Inventory:");
-        for (Stock stock : stockList) {
-            System.out.println(stock);
+            System.out.println("Error saving CSV file: " + e.getMessage());
         }
     }
 
