@@ -15,8 +15,8 @@ import java.util.Scanner;
 public class InventorySystem {
 
     // HashMap to store the inventory with engineNumber as the key
-    private Map<String, Stock> inventoryMap;
-    private BST bst;
+    Map<String, Stock> inventoryMap;
+    BST bst;
 
     // Constructor
     public InventorySystem() {
