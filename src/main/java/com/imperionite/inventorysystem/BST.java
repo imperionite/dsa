@@ -22,27 +22,27 @@ public class BST {
     }
 
     private Node insertRec(Node root, Stock stock) {
-        // If tree is empty, return a new node
         if (root == null) {
             root = new Node(stock);
             return root;
         }
 
-        // Otherwise, recur down the tree
         int comparison = stock.getBrand().compareToIgnoreCase(root.stock.getBrand());
 
-        // Insert into the left or right subtree based on the comparison
         if (comparison < 0) {
             root.left = insertRec(root.left, stock);
         } else if (comparison > 0) {
             root.right = insertRec(root.right, stock);
         } else {
-            // In case of equal brand, we can choose to insert to either left or right
-            // For this example, we will insert on the right side
-            root.right = insertRec(root.right, stock);
+            // Handle equal brands (e.g., insert based on engine number as a secondary sort)
+            int engineComparison = stock.getEngineNumber().compareToIgnoreCase(root.stock.getEngineNumber());
+            if (engineComparison < 0) {
+                root.left = insertRec(root.left, stock);
+            } else {
+                root.right = insertRec(root.right, stock);
+            }
         }
 
-        // Return the (unchanged) node pointer
         return root;
     }
 
