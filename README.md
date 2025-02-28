@@ -13,9 +13,16 @@
 [Inventory Search Item](https://github.com/imperionite/dsa/blob/p1/inventory-search/src/main/java/com/imperionite/inventorysystem/InventorySystem.java)
 
 
+
 **MS 2**
 
-[Add Stock Item](https://github.com/imperionite/dsa/blob/p1/add-new-stock/src/main/java/com/imperionite/inventorysystem/InventorySystem.java)
+[Add Stock Item](https://github.com/imperionite/dsa/tree/p2/add-new-stockV2/src/main/java/com/imperionite/inventorysystem)
+
+[Deleting Stock](https://github.com/imperionite/dsa/tree/p2/delete-stock/src/main/java/com/imperionite/inventorysystem)
+
+[Sorting by Brand](https://github.com/imperionite/dsa/tree/p2/sorting-stock/src/main/java/com/imperionite/inventorysystem)
+
+[Searching the Inventory](https://github.com/imperionite/dsa/tree/p2/inventory-search/src/main/java/com/imperionite/inventorysystem)
 
 
 ## To run the app

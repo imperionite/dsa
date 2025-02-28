@@ -13,11 +13,11 @@ import org.apache.commons.csv.CSVRecord;
 
 public class InventorySystem {
 
-    private List<Stock> stockList = new ArrayList<>();
+    List<Stock> stockList = new ArrayList<>();
     // private Set<String> engineNumbers = new HashSet<>(); // To ensure unique
     // engine numbers
-    private static final String CSV_FILE_PATH = "data/inventory.csv"; // Path to the CSV file
-    private StockBST stockBST = new StockBST(); // We now use the BST for stock operations
+    static String CSV_FILE_PATH = "data/inventory.csv"; // Path to the CSV file
+    StockBST stockBST = new StockBST(); // We now use the BST for stock operations
 
     public static void main(String[] args) {
         InventorySystem system = new InventorySystem();
@@ -219,6 +219,10 @@ public class InventorySystem {
         for (Stock stock : stockList) {
             System.out.println(stock);
         }
+    }
+
+    public void setCsvFilePath(String csvFilePath) {
+        CSV_FILE_PATH = csvFilePath;
     }
 
 }
